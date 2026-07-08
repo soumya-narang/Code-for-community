@@ -62,8 +62,8 @@ const Track: React.FC = () => {
           <span className="font-mono text-[10px] text-seal uppercase tracking-widest block mb-3">
             Public Accountability
           </span>
-          <h1 className="font-display text-2xl md:text-4xl text-ink leading-tight">
-            The Ward 6 Public Ledger & Promise Tracker
+          <h1 className="font-display text-3xl md:text-5xl lg:text-6xl text-ink leading-tight">
+            The Constituency Public Ledger & Promise Tracker
           </h1>
           <p className="font-sans text-slate mt-3 max-w-3xl leading-relaxed">
             Every development request evaluated by Civix is tracked publicly. Priorities are set by evidence, not volume — and every status change is logged here for your review.
