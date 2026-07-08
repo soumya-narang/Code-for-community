@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useProjectStore } from '../store/useProjectStore';
-import type { Project, Status } from '../store/useProjectStore';
+import type { Status } from '../store/useProjectStore';
 import { CivixLogo } from '../components/CivixLogo';
 
 // Lifecycle stages in order

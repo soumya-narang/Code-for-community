@@ -11,7 +11,7 @@ const Hero: React.FC = () => {
 
   // Master Simulation Loop
   useEffect(() => {
-    let timers: NodeJS.Timeout[] = [];
+    let timers: ReturnType<typeof setTimeout>[] = [];
 
     const runLoop = () => {
       setFadeOpacity(1);
@@ -45,7 +45,7 @@ const Hero: React.FC = () => {
 
   // Rapid Count Animation during Conflict Stage
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    let interval: ReturnType<typeof setInterval>;
     if (stage === 'conflict') {
       setCount(0);
       let c = 0;
@@ -63,7 +63,7 @@ const Hero: React.FC = () => {
     return () => clearInterval(interval);
   }, [stage]);
 
-  const springProps = { type: 'spring', stiffness: 200, damping: 25 };
+  const springProps = { type: 'spring' as const, stiffness: 200, damping: 25 };
 
   return (
     <section className="min-h-screen pt-24 pb-48 px-6 flex flex-col justify-center max-w-5xl mx-auto overflow-visible relative">
