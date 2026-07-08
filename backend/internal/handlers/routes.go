@@ -7,18 +7,22 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/soumya-narang/Code-for-community/backend/internal/clustering"
 	"github.com/soumya-narang/Code-for-community/backend/internal/llm"
 	"github.com/soumya-narang/Code-for-community/backend/internal/models"
+	"github.com/soumya-narang/Code-for-community/backend/internal/scoring"
 	"gorm.io/gorm"
 )
 
 type Handler struct {
-	DB  *gorm.DB
-	LLM *llm.Client
+	DB               *gorm.DB
+	LLM              *llm.Client
+	ClusteringEngine *clustering.ClusteringEngine
+	ScoringEngine    *scoring.ScoringEngine
 }
 
-func RegisterRoutes(e *echo.Echo, db *gorm.DB, llmClient *llm.Client) {
-	h := &Handler{DB: db, LLM: llmClient}
+func RegisterRoutes(e *echo.Echo, db *gorm.DB, llmClient *llm.Client, ce *clustering.ClusteringEngine, se *scoring.ScoringEngine) {
+	h := &Handler{DB: db, LLM: llmClient, ClusteringEngine: ce, ScoringEngine: se}
 
 	// Health check
 	e.GET("/health", h.HealthCheck)
@@ -28,6 +32,7 @@ func RegisterRoutes(e *echo.Echo, db *gorm.DB, llmClient *llm.Client) {
 
 	// Submissions
 	api.POST("/submissions", h.CreateSubmission)
+	api.POST("/seed", h.SeedWardData)
 	api.GET("/submissions", h.GetSubmissions)
 
 	// Themes
@@ -87,15 +92,40 @@ func (h *Handler) CreateSubmission(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to save submission"})
 	}
 
-	// Async trigger clustering here later
-	// go func() { ... }()
+	// Trigger clustering
+	theme, err := h.ClusteringEngine.ClusterSubmission(ctx, &sub)
+	if err == nil && theme != nil {
+		// Trigger scoring
+		_ = h.ScoringEngine.ScoreTheme(ctx, theme)
+	} else {
+		c.Logger().Errorf("Clustering error: %v", err)
+	}
 
 	return c.JSON(http.StatusCreated, map[string]interface{}{
 		"tracking_id":     sub.TrackingID,
 		"normalized_text": sub.NormalizedText,
 		"category":        sub.Category,
 		"sentiment":       sub.Sentiment,
+		"theme_id":        sub.ThemeID,
 	})
+}
+
+// SeedWardData populates the database with canonical demo data
+func (h *Handler) SeedWardData(c echo.Context) error {
+	ward6Data := models.WardData{
+		Ward:                        "Ward 6",
+		Enrollment:                  1200,
+		SeatsAvailable:              400, // severe demand gap for education
+		Population:                  20000,
+		DistanceToNearestFacilityKm: 15.0,
+		FacilityType:                "School",
+	}
+
+	if err := h.DB.Save(&ward6Data).Error; err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to seed data"})
+	}
+
+	return c.JSON(http.StatusOK, map[string]string{"message": "seeded successfully"})
 }
 
 // Generate unique tracking ID
@@ -114,7 +144,58 @@ func (h *Handler) GetSubmissions(c echo.Context) error {
 }
 
 func (h *Handler) GetThemes(c echo.Context) error {
-	return c.JSON(http.StatusOK, []string{})
+	var themes []models.Theme
+	if err := h.DB.Order("priority_score desc").Find(&themes).Error; err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to fetch themes"})
+	}
+
+	// For MVP, we need to return the expected structure for the frontend
+	type FrontendTheme struct {
+		ID                  string      `json:"id"`
+		Theme               string      `json:"theme"`
+		Ward                string      `json:"ward"`
+		Category            string      `json:"category"`
+		Score               float64     `json:"score"`
+		SubmissionCount     int         `json:"submissionCount"`
+		Justification       string      `json:"justification"`
+		Status              string      `json:"status"`
+		StatusJustification string      `json:"statusJustification,omitempty"`
+		LastUpdated         string      `json:"lastUpdated"`
+		Signals             interface{} `json:"signals"`
+		Submissions         interface{} `json:"submissions"`
+	}
+
+	var result []FrontendTheme
+	for _, t := range themes {
+		// Mock mapping signals from breakdown
+		ft := FrontendTheme{
+			ID:              t.ID.String(),
+			Theme:           t.Title,
+			Ward:            t.Ward,
+			Category:        t.Category,
+			Score:           t.PriorityScore,
+			SubmissionCount: t.SubmissionCount,
+			Justification:   t.WhyJustification,
+			Status:          t.Status,
+			LastUpdated:     t.UpdatedAt.Format("2006-01-02T15:04:05Z"),
+			Signals: []map[string]interface{}{
+				{"label": "Citizen volume", "value": 30, "color": "bg-slate"},
+				{"label": "Urgency", "value": 15, "color": "bg-slate"},
+				{"label": "Demand gap", "value": 35, "color": "bg-signal"},
+				{"label": "Recency", "value": 20, "color": "bg-slate"},
+			},
+			Submissions: []map[string]interface{}{},
+		}
+		
+		// Map proper status to frontend enum
+		if ft.Status == "proposed" {
+			ft.Status = "In Review"
+		}
+		
+		result = append(result, ft)
+	}
+
+	return c.JSON(http.StatusOK, result)
 }
 
 func (h *Handler) GetTheme(c echo.Context) error {

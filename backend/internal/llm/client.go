@@ -40,7 +40,7 @@ type AIResponse struct {
 
 // TranslateAndTag takes a raw submission and returns translation, detected language, sentiment, and category
 func (c *Client) TranslateAndTag(ctx context.Context, rawText string) (normalizedText, language, category, sentiment string, err error) {
-	model := c.genaiClient.GenerativeModel("gemini-1.5-flash")
+	model := c.genaiClient.GenerativeModel("gemini-1.5-flash-latest")
 	model.ResponseMIMEType = "application/json"
 	model.SystemInstruction = &genai.Content{
 		Parts: []genai.Part{
@@ -76,14 +76,85 @@ func (c *Client) TranslateAndTag(ctx context.Context, rawText string) (normalize
 	return aiResp.NormalizedText, aiResp.Language, aiResp.Category, aiResp.Sentiment, nil
 }
 
+// GetEmbedding computes the embedding for a given text
+func (c *Client) GetEmbedding(ctx context.Context, text string) ([]float32, error) {
+	em := c.genaiClient.EmbeddingModel("embedding-001")
+	res, err := em.EmbedContent(ctx, genai.Text(text))
+	if err != nil {
+		return nil, fmt.Errorf("failed to get embedding: %v", err)
+	}
+	if res.Embedding == nil || len(res.Embedding.Values) == 0 {
+		return nil, fmt.Errorf("empty embedding response")
+	}
+	return res.Embedding.Values, nil
+}
+
+type ThemeDetails struct {
+	Title        string `json:"title"`
+	Description  string `json:"description"`
+	SampleQuotes string `json:"sample_quotes"` // stringified JSON array
+}
+
 // GenerateThemeDetails generates title, description, and sample quotes for a cluster of submissions
 func (c *Client) GenerateThemeDetails(ctx context.Context, submissions []string) (title, description, sampleQuotes string, err error) {
-	// TODO: Call Gemini API for clustering details
-	return "Sample Title", "Sample Description", "[\"quote 1\"]", nil
+	model := c.genaiClient.GenerativeModel("gemini-1.5-flash-latest")
+	model.ResponseMIMEType = "application/json"
+	model.SystemInstruction = &genai.Content{
+		Parts: []genai.Part{
+			genai.Text("You are an AI assistant summarizing citizen complaints into a single cohesive development theme. Given a list of related complaints, output a JSON object with the following fields:\n" +
+				"- \"title\": A short, actionable title (e.g., 'Ward 6 Primary School Upgrade').\n" +
+				"- \"description\": A concise 2-3 sentence summary of the core issue and requests.\n" +
+				"- \"sample_quotes\": A JSON array of strings containing 2 to 3 representative quotes from the raw submissions."),
+		},
+	}
+
+	subsJSON, _ := json.Marshal(submissions)
+	prompt := genai.Text(fmt.Sprintf("Submissions: %s", string(subsJSON)))
+	resp, err := model.GenerateContent(ctx, prompt)
+	if err != nil {
+		return "", "", "", fmt.Errorf("failed to generate theme details: %v", err)
+	}
+
+	if len(resp.Candidates) == 0 || len(resp.Candidates[0].Content.Parts) == 0 {
+		return "", "", "", fmt.Errorf("empty response from model")
+	}
+
+	textPart, ok := resp.Candidates[0].Content.Parts[0].(genai.Text)
+	if !ok {
+		return "", "", "", fmt.Errorf("unexpected response type")
+	}
+
+	var details ThemeDetails
+	if err := json.Unmarshal([]byte(textPart), &details); err != nil {
+		return "", "", "", fmt.Errorf("failed to parse theme details: %v", err)
+	}
+
+	return details.Title, details.Description, details.SampleQuotes, nil
 }
 
 // GenerateJustification generates a one-line justification based on the score breakdown
-func (c *Client) GenerateJustification(ctx context.Context, scoreBreakdown map[string]interface{}) (string, error) {
-	// TODO: Call Gemini API
-	return "Ranked high due to severe demand gap.", nil
+func (c *Client) GenerateJustification(ctx context.Context, scoreBreakdown string) (string, error) {
+	model := c.genaiClient.GenerativeModel("gemini-1.5-flash-latest")
+	model.SystemInstruction = &genai.Content{
+		Parts: []genai.Part{
+			genai.Text("You are an AI prioritizing public works. Given a JSON representation of a score breakdown (volume, sentiment, demand_gap, recency), write a SINGLE SENTENCE justifying the priority score. Example: 'Ranked high due to severe demand gap: 3x population served with no transport link, despite fewer raw complaints.' Focus on the highest contributing factor."),
+		},
+	}
+
+	prompt := genai.Text(fmt.Sprintf("Score Breakdown: %s", scoreBreakdown))
+	resp, err := model.GenerateContent(ctx, prompt)
+	if err != nil {
+		return "", fmt.Errorf("failed to generate justification: %v", err)
+	}
+
+	if len(resp.Candidates) == 0 || len(resp.Candidates[0].Content.Parts) == 0 {
+		return "", fmt.Errorf("empty response")
+	}
+
+	textPart, ok := resp.Candidates[0].Content.Parts[0].(genai.Text)
+	if !ok {
+		return "", fmt.Errorf("unexpected response type")
+	}
+
+	return string(textPart), nil
 }

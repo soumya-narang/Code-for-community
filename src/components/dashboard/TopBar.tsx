@@ -16,7 +16,7 @@ const TopBar: React.FC<TopBarProps> = ({ activeCategory, setActiveCategory, sear
       
       {/* Left: Heading & Timestamp */}
       <div>
-        <h1 className="font-display text-2xl md:text-3xl text-ink">Ward 6 — Priority List</h1>
+        <h1 className="font-display text-2xl md:text-3xl text-ink">Constituency Priority List</h1>
         <p className="font-mono text-xs text-slate mt-2 uppercase tracking-wide">
           Updated 14 min ago
         </p>
