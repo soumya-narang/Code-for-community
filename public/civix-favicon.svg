@@ -1,0 +1,32 @@
+<svg viewBox="10 6 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g id="logo-mark">
+    <!-- The Civic Curve (Left balance stroke / 'C') -->
+    <path 
+      d="M24 12C18 12 14 16 14 21C14 26 18 30 24 30" 
+      stroke="#0F172A" 
+      stroke-width="3" 
+      stroke-linecap="round"
+    />
+    <!-- The Ledger Baseline Divider -->
+    <path 
+      d="M12 30H32" 
+      stroke="#0F172A" 
+      stroke-width="1.5" 
+      stroke-linecap="round"
+    />
+    <!-- The Weight Anchor Metric Line (the 'i' stem) -->
+    <path 
+      d="M28 14V30" 
+      stroke="#0F172A" 
+      stroke-width="2.5" 
+      stroke-linecap="round"
+    />
+    <!-- The Seal - Data-driven alignment point (the 'i' dot) -->
+    <circle 
+      cx="28" 
+      cy="9" 
+      r="3" 
+      fill="#B91C1C" 
+    />
+  </g>
+</svg>
