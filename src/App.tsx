@@ -10,7 +10,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/submit" element={<SubmitIssue />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/dashboard" element={<Dashboard view="priority" />} />
+        <Route path="/dashboard/submissions" element={<Dashboard view="submissions" />} />
         <Route path="/track" element={<Track />} />
       </Routes>
     </Router>

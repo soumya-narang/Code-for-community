@@ -2,10 +2,15 @@ import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/dashboard/Sidebar';
 import TopBar from '../components/dashboard/TopBar';
 import PriorityList from '../components/dashboard/PriorityList';
+import SubmissionsList from '../components/dashboard/SubmissionsList';
 import type { Category } from '../store/useProjectStore';
 import { useProjectStore } from '../store/useProjectStore';
 
-const Dashboard: React.FC = () => {
+interface DashboardProps {
+  view?: 'priority' | 'submissions';
+}
+
+const Dashboard: React.FC<DashboardProps> = ({ view = 'priority' }) => {
   const fetchProjects = useProjectStore((s) => s.fetchProjects);
   const [activeCategory, setActiveCategory] = useState<Category>('All');
   const [searchQuery, setSearchQuery] = useState('');
@@ -26,10 +31,17 @@ const Dashboard: React.FC = () => {
           setSearchQuery={setSearchQuery}
         />
         <div className="flex-grow">
-          <PriorityList 
-            activeCategory={activeCategory} 
-            searchQuery={searchQuery} 
-          />
+          {view === 'priority' ? (
+            <PriorityList 
+              activeCategory={activeCategory} 
+              searchQuery={searchQuery} 
+            />
+          ) : (
+            <SubmissionsList 
+              activeCategory={activeCategory} 
+              searchQuery={searchQuery} 
+            />
+          )}
         </div>
       </main>
     </div>

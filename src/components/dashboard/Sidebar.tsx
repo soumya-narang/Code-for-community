@@ -47,12 +47,16 @@ const Sidebar: React.FC = () => {
             Priority List
           </Link>
           
-          <div className="py-3 px-6 font-sans text-sm block border-l-4 border-transparent text-slate/50 cursor-not-allowed">
-            <div className="flex items-center justify-between">
-              <span>Submissions</span>
-              <span className="font-mono text-[10px] text-seal uppercase tracking-widest border border-seal/30 px-1.5 py-0.5">Demo Scope: Locked</span>
-            </div>
-          </div>
+          <Link 
+            to="/dashboard/submissions"
+            className={`py-3 px-6 font-sans text-sm block border-l-4 transition-colors ${
+              location.pathname === '/dashboard/submissions' 
+                ? 'border-seal text-ink font-medium bg-line/10' 
+                : 'border-transparent text-slate hover:text-ink hover:bg-line/5'
+            }`}
+          >
+            Submissions
+          </Link>
 
           <Link 
             to="/track"
