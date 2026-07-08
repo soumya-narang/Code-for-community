@@ -18,7 +18,7 @@ const Solution: React.FC = () => {
         {/* Step 01 */}
         <div className="py-8 md:py-12 md:pr-8 border-b md:border-b-0 md:border-r border-line flex flex-col h-full">
           <div className="mb-8">
-            <span className="font-mono text-sm text-seal">01 &mdash; Collect</span>
+            <span className="font-mono text-sm text-seal">01 / Collect</span>
             <p className="font-sans text-slate mt-3 leading-relaxed">
               Citizens submit requests via a simple multilingual form, SMS, or WhatsApp.
             </p>
@@ -41,9 +41,9 @@ const Solution: React.FC = () => {
         {/* Step 02 */}
         <div className="py-8 md:py-12 md:px-8 border-b md:border-b-0 md:border-r border-line flex flex-col h-full">
           <div className="mb-8">
-            <span className="font-mono text-sm text-seal">02 &mdash; Understand</span>
+            <span className="font-mono text-sm text-seal">02 / Understand</span>
             <p className="font-sans text-slate mt-3 leading-relaxed">
-              AI clusters noisy submissions into recurring themes, tagging category, location, and urgency.
+              The system groups scattered submissions into core issues, extracting category, location, and urgency.
             </p>
           </div>
           
@@ -57,7 +57,7 @@ const Solution: React.FC = () => {
                 viewport={{ once: false, amount: 0.8 }}
                 transition={{ duration: 0.5, delay: 0.8 }}
               >
-                <p className="font-sans text-sm text-ink font-medium">Road repair &mdash; Ward 4</p>
+                <p className="font-sans text-sm text-ink font-medium">Road repair, Ward 4</p>
                 <p className="font-mono text-xs text-slate mt-1">12 SUBMISSIONS</p>
               </motion.div>
 
@@ -90,9 +90,9 @@ const Solution: React.FC = () => {
         {/* Step 03 */}
         <div className="py-8 md:py-12 md:pl-8 flex flex-col h-full">
           <div className="mb-8">
-            <span className="font-mono text-sm text-seal">03 &mdash; Decide</span>
+            <span className="font-mono text-sm text-seal">03 / Decide</span>
             <p className="font-sans text-slate mt-3 leading-relaxed">
-              The Demand-Supply Scoring Engine cross-references citizen demand against real public data to produce a ranked, justified list.
+              The scoring engine compares public requests against local infrastructure data to build a prioritized list.
             </p>
           </div>
           
@@ -104,7 +104,7 @@ const Solution: React.FC = () => {
                 <span className="font-mono text-4xl text-paper">87</span>
                 <span className="font-mono text-sm text-paper/50">/100</span>
               </div>
-              <span className="font-mono text-xs text-paper/70 mt-2">&mdash; Demand-gap weighted</span>
+              <span className="font-mono text-xs text-paper/70 mt-2">* Demand-gap weighted</span>
             </div>
           </div>
         </div>

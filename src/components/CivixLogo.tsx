@@ -31,7 +31,7 @@ export const CivixLogo = ({ className = "h-12 w-auto", ...props }: React.SVGProp
           strokeWidth="2.5" 
           strokeLinecap="round"
         />
-        {/* The Seal — Data-driven alignment point (the 'i' dot) */}
+        {/* The Seal - Data-driven alignment point (the 'i' dot) */}
         <circle 
           cx="28" 
           cy="9" 

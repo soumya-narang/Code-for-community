@@ -20,6 +20,9 @@ const ScoringEngine: React.FC = () => {
         </h2>
       </div>
 
+      <div className="mb-3">
+        <span className="font-mono text-[10px] text-seal uppercase tracking-widest opacity-80">Demo :</span>
+      </div>
       <div className="border border-line bg-paper">
         {/* Header row */}
         <div className="p-6 md:p-8 border-b border-line flex flex-col md:flex-row md:justify-between md:items-end gap-4">

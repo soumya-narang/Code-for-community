@@ -1,156 +1,253 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+type Stage = 'conflict' | 'scanner' | 'evidence';
 
 const Hero: React.FC = () => {
-  return (
-    <section className="min-h-screen pt-32 pb-20 px-6 flex flex-col justify-center max-w-6xl mx-auto">
+  const [stage, setStage] = useState<Stage>('conflict');
+  const [count, setCount] = useState(0);
+  const [isSorted, setIsSorted] = useState(false);
+  const [fadeOpacity, setFadeOpacity] = useState(1);
+
+  // Master Simulation Loop
+  useEffect(() => {
+    let timers: NodeJS.Timeout[] = [];
+
+    const runLoop = () => {
+      setFadeOpacity(1);
+      setStage('conflict');
       
-      <div className="mb-16 md:mb-24">
-        <motion.p 
-          className="font-mono text-xs md:text-sm uppercase tracking-widest text-seal mb-6"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-        >
+      timers.push(setTimeout(() => {
+        setStage('scanner');
+      }, 4000));
+      
+      timers.push(setTimeout(() => {
+        setStage('evidence');
+        setIsSorted(false);
+        timers.push(setTimeout(() => setIsSorted(true), 800));
+      }, 6000));
+
+      timers.push(setTimeout(() => {
+        setFadeOpacity(0);
+      }, 9500));
+
+      timers.push(setTimeout(() => {
+        runLoop(); 
+      }, 10000));
+    };
+
+    runLoop();
+
+    return () => {
+      timers.forEach(t => clearTimeout(t));
+    };
+  }, []);
+
+  // Rapid Count Animation during Conflict Stage
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (stage === 'conflict') {
+      setCount(0);
+      let c = 0;
+      interval = setInterval(() => {
+        c++;
+        if (c <= 50) {
+          setCount(c);
+        } else {
+          clearInterval(interval);
+        }
+      }, 40); // Counts to 50 in 2s
+    } else {
+      setCount(50);
+    }
+    return () => clearInterval(interval);
+  }, [stage]);
+
+  const springProps = { type: 'spring', stiffness: 200, damping: 25 };
+
+  return (
+    <section className="min-h-screen pt-24 pb-48 px-6 flex flex-col justify-center max-w-5xl mx-auto overflow-visible relative">
+      
+      {/* Intro Headline */}
+      <div className="mb-12 text-center relative z-20">
+        <p className="font-mono text-xs font-bold uppercase tracking-widest text-[var(--seal)] mb-4">
           AI for Constituency Development Planning
-        </motion.p>
-        
-        <motion.h1 
-          className="font-display text-4xl md:text-6xl lg:text-7xl leading-tight md:leading-tight mb-8"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
+        </p>
+        <h1 className="font-display text-4xl md:text-5xl lg:text-6xl leading-tight mb-6">
           <span className="block text-slate font-normal">Priority isn't who shouts loudest.</span>
-          <span className="block text-ink font-semibold mt-2">It's who needs it most.</span>
-        </motion.h1>
-        
-        <motion.p 
-          className="font-sans text-lg md:text-xl text-slate max-w-2xl leading-relaxed"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-        >
-          Civix consolidates citizen requests and ranks them against real-world demand data, allowing elected representatives to allocate resources based on evidence instead of noise.
-        </motion.p>
+          <span className="block text-ink font-semibold mt-1">It's who needs it most.</span>
+        </h1>
       </div>
 
-      {/* Signature Element: The Balance Visualization */}
       <motion.div 
-        className="w-full border-t border-b border-line py-8"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.8, delay: 0.6 }}
+        animate={{ opacity: fadeOpacity }}
+        transition={{ duration: 0.4 }}
+        className="flex flex-col relative w-full border border-line bg-paper"
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-8">
-          
-          {/* Left Side: Volume-driven */}
-          <div className="flex flex-col">
-            <div className="mb-4">
-              <h3 className="font-sans font-medium text-ink text-lg">Ward 6: School Upgrade</h3>
-              <p className="font-mono text-slate text-sm mt-1">RAW COMPLAINT VOLUME</p>
-            </div>
-            
-            <div className="flex items-baseline gap-3 mb-4">
-              <span className="font-mono text-4xl font-semibold text-ink">50</span>
-              <span className="font-mono text-sm text-slate">requests</span>
-            </div>
-
-            <div className="h-1 bg-line w-full rounded-none overflow-hidden relative">
-              <motion.div 
-                className="absolute top-0 left-0 bottom-0 bg-slate"
-                initial={{ width: 0 }}
-                animate={{ width: '85%' }}
-                transition={{ duration: 1, delay: 1, ease: 'easeOut' }}
-              />
-            </div>
-            
-            {/* Empty space to match the right side's data annotations height */}
-            <div className="mt-6 flex flex-col gap-2 opacity-30 pointer-events-none">
-              <div className="flex justify-between items-center py-2 border-b border-dashed border-line">
-                <span className="font-sans text-xs">No demographic flags</span>
-                <span className="font-mono text-xs">-</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Right Side: Evidence-driven */}
-          <div className="flex flex-col md:border-l md:border-line md:pl-8 relative">
-            <div className="mb-4">
-              <h3 className="font-sans font-medium text-ink text-lg">Ward 6: Vocational Centre</h3>
-              <p className="font-mono text-seal text-sm mt-1">EVIDENCE-BACKED PRIORITY</p>
-            </div>
-            
-            <div className="flex items-baseline gap-3 mb-4">
-              <span className="font-mono text-4xl font-semibold text-ink">12</span>
-              <span className="font-mono text-sm text-slate">requests</span>
-            </div>
-
-            <div className="h-1 bg-line w-full rounded-none overflow-hidden relative mb-6">
-              {/* The base volume bar (small) */}
-              <motion.div 
-                className="absolute top-0 left-0 bottom-0 bg-slate"
-                initial={{ width: 0 }}
-                animate={{ width: '20%' }}
-                transition={{ duration: 1, delay: 1, ease: 'easeOut' }}
-              />
-              {/* The evidence boost bar that overtakes the left side */}
-              <motion.div 
-                className="absolute top-0 left-0 bottom-0 bg-signal"
-                initial={{ width: '20%' }}
-                animate={{ width: '95%' }}
-                transition={{ duration: 1.5, delay: 2.2, ease: 'easeOut' }}
-                style={{ originX: 0 }}
-              />
-            </div>
-
-            <div className="flex flex-col gap-0 border-t border-line">
-              <motion.div 
-                className="flex justify-between items-center py-2.5 border-b border-line"
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 1.5 }}
-              >
-                <span className="font-sans text-sm text-slate">Distance to nearest alternative</span>
-                <span className="font-mono text-sm text-ink font-medium">12km</span>
-              </motion.div>
-              
-              <motion.div 
-                className="flex justify-between items-center py-2.5 border-b border-line"
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 1.7 }}
-              >
-                <span className="font-sans text-sm text-slate">Population served vs capacity</span>
-                <span className="font-mono text-sm text-ink font-medium">3&times;</span>
-              </motion.div>
-
-              <motion.div 
-                className="flex justify-between items-center py-2.5 border-b border-line"
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 1.9 }}
-              >
-                <span className="font-sans text-sm text-slate">Existing transport links</span>
-                <span className="font-mono text-sm text-signal font-medium">0</span>
-              </motion.div>
-            </div>
-          </div>
-
-        </div>
         
-        <motion.div 
-          className="mt-8 text-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 3 }}
-        >
-          <p className="font-mono text-xs text-slate tracking-wide">
-            Same ward. Fewer complaints. Higher priority because the data backs it up.
-          </p>
-        </motion.div>
-      </motion.div>
+        {/* Visual Layout Grid */}
+        <div className="relative grid grid-cols-1 lg:grid-cols-2 p-6 md:p-8 min-h-[400px] overflow-hidden">
+           
+           {/* Stage 2: The Civix Scanner Line */}
+           <AnimatePresence>
+              {stage === 'scanner' && (
+                <motion.div 
+                   initial={{ top: '0%' }}
+                   animate={{ top: '100%' }}
+                   transition={{ duration: 2, ease: 'linear' }}
+                   className="absolute left-0 right-0 h-[2px] z-50 pointer-events-none"
+                   style={{ backgroundColor: 'var(--seal)', boxShadow: '0 0 20px 2px var(--seal)' }}
+                />
+              )}
+           </AnimatePresence>
+           
+           {/* LEFT SIDE: The Loud Noise Channel */}
+           <div className="flex flex-col lg:border-r border-line lg:pr-8 pb-10 lg:pb-0">
+              <p className="font-mono text-[10px] text-slate uppercase tracking-widest mb-10 text-center lg:text-left">
+                [ THE LOUD NOISE CHANNEL // MARKET ROAD POTHOLES ]
+              </p>
+              
+              <div className="flex-1 flex flex-col items-center justify-center relative min-h-[220px]">
+                 <motion.div 
+                    layout
+                    animate={{ 
+                      height: (stage === 'scanner' || stage === 'evidence') ? 30 : 200,
+                      opacity: (stage === 'scanner' || stage === 'evidence') ? 0.3 : 1,
+                      width: (stage === 'scanner' || stage === 'evidence') ? '60%' : '20%',
+                    }}
+                    transition={springProps}
+                    className="border flex items-end justify-center overflow-hidden self-center border-slate"
+                 >
+                    <div className="w-full h-full flex flex-col-reverse gap-[1px] p-[1px] opacity-70">
+                      {Array.from({ length: 50 }).map((_, i) => (
+                        <motion.div 
+                          key={i} 
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: i < count ? 1 : 0 }}
+                          transition={{ duration: 0 }}
+                          className="w-full flex-1 bg-slate" 
+                        />
+                      ))}
+                    </div>
+                 </motion.div>
+              </div>
 
+              <div className="mt-8 text-center h-8">
+                 <p className="font-mono text-[11px] lg:text-sm text-ink font-bold uppercase tracking-widest transition-colors duration-300">
+                   {count} REPETITIVE COMPLAINTS REGISTERED
+                 </p>
+              </div>
+           </div>
+
+           {/* RIGHT SIDE: The Silent Scarcity Channel */}
+           <div className="flex flex-col lg:pl-8 pt-10 lg:pt-0 border-t lg:border-t-0 border-line">
+              <p className="font-mono text-[10px] text-slate uppercase tracking-widest mb-10 text-center lg:text-left">
+                [ THE SILENT SCARCITY CHANNEL // ISOLATED VOCATIONAL CENTRE ]
+              </p>
+              
+              <div className="flex-1 flex flex-col items-center justify-center relative min-h-[220px]">
+                 {/* The Vector Bracket */}
+                 <motion.div 
+                    layout
+                    animate={{
+                       borderColor: (stage === 'scanner' || stage === 'evidence') ? 'var(--seal)' : 'var(--slate)',
+                       borderTopWidth: (stage === 'scanner' || stage === 'evidence') ? '4px' : '2px',
+                       borderLeftWidth: (stage === 'scanner' || stage === 'evidence') ? '4px' : '2px',
+                       borderRightWidth: (stage === 'scanner' || stage === 'evidence') ? '4px' : '2px',
+                    }}
+                    transition={springProps}
+                    className="w-[80%] h-16 opacity-90 flex items-start justify-center pt-2 relative mt-8"
+                    style={{ borderTopStyle: 'solid', borderLeftStyle: 'solid', borderRightStyle: 'solid' }}
+                 >
+                    <div className="absolute -left-1.5 -bottom-2 w-3 h-3 bg-paper border border-ink rounded-sm" />
+                    <div className="absolute -right-1.5 -bottom-2 w-3 h-3 bg-paper border border-ink rounded-full" />
+                    
+                    <motion.span 
+                      animate={{
+                         scale: (stage === 'scanner' || stage === 'evidence') ? 1.15 : 1,
+                         color: (stage === 'scanner' || stage === 'evidence') ? 'var(--seal)' : 'var(--ink)',
+                         y: (stage === 'scanner' || stage === 'evidence') ? -35 : -25
+                      }}
+                      transition={springProps}
+                      className="absolute font-mono text-[11px] lg:text-sm font-bold tracking-widest uppercase bg-paper px-4 whitespace-nowrap text-center inline-block"
+                    >
+                      12km ACCESS GAP<br/>
+                      <span className="text-[9px] opacity-70">(ZERO TRANSIT LINKS)</span>
+                    </motion.span>
+                 </motion.div>
+              </div>
+
+              <div className="mt-8 text-center h-8">
+                 <p className="font-mono text-[11px] lg:text-sm text-slate font-bold uppercase tracking-widest opacity-60">
+                   3 SUBMISSIONS
+                 </p>
+              </div>
+           </div>
+        </div>
+
+        {/* Dynamic Subtitle Axis */}
+        <div className="min-h-[90px] flex items-center justify-center text-center px-6 md:px-12 w-full border-t border-line py-6 bg-line/5 relative overflow-hidden">
+           <AnimatePresence mode="wait">
+              {stage === 'conflict' && (
+                <motion.p key="1" initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="font-sans text-slate text-sm lg:text-base italic max-w-2xl">
+                  "Traditional systems prioritize the market road because 50 people shouted loudly over a minor annoyance."
+                </motion.p>
+              )}
+              {stage === 'scanner' && (
+                <motion.p key="2" initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="font-sans text-slate text-sm lg:text-base italic max-w-2xl">
+                  "Civix automatically weighs the complaint volume against real infrastructure data..."
+                </motion.p>
+              )}
+              {stage === 'evidence' && (
+                <motion.p key="3" initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="font-mono text-[var(--ink)] text-[11px] lg:text-xs leading-relaxed border-l-2 border-[var(--seal)] pl-4 text-left max-w-3xl">
+                  RESULT: Vocational Centre takes <span className="font-bold text-[var(--seal)]">Priority #01</span> because a <span className="font-bold text-[var(--seal)]">12km isolation gap</span> outweighs 50 minor complaints.
+                </motion.p>
+              )}
+           </AnimatePresence>
+        </div>
+
+        {/* Mini Ledger Array (Stage 3 Slide-Open) */}
+        <div className="w-full absolute bottom-0 left-0 right-0 z-20 flex justify-center translate-y-[calc(100%+2rem)]">
+           <AnimatePresence>
+              {stage === 'evidence' && (
+                 <motion.div 
+                    initial={{ opacity: 0, y: -40 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.98, y: -20 }}
+                    transition={springProps}
+                    className="w-full max-w-2xl flex flex-col items-center"
+                 >
+                    <div className="w-full flex flex-col gap-3 border border-line bg-paper p-5 md:p-6 shadow-[0_20px_40px_rgba(0,0,0,0.05)]">
+                       {isSorted ? (
+                          <>
+                             <motion.div layout key="clinic" transition={springProps} className="w-full border border-[var(--seal)] bg-[var(--seal)]/5 p-4 flex flex-col md:flex-row justify-between md:items-center gap-2">
+                                <span className="font-sans text-ink font-semibold">Vocational Centre</span>
+                                <span className="font-mono text-[var(--seal)] font-bold tracking-widest text-[10px] uppercase">Rank #01 // Evidence Priority</span>
+                             </motion.div>
+                             <motion.div layout key="road" transition={springProps} className="w-full border border-line bg-paper p-4 flex flex-col md:flex-row justify-between md:items-center gap-2 opacity-50">
+                                <span className="font-sans text-ink font-medium">Market Road Repair</span>
+                                <span className="font-mono text-slate font-bold tracking-widest text-[10px] uppercase">Rank #02 // Deferred</span>
+                             </motion.div>
+                          </>
+                       ) : (
+                          <>
+                             <motion.div layout key="road" transition={springProps} className="w-full border border-line bg-paper p-4 flex flex-col md:flex-row justify-between md:items-center gap-2">
+                                <span className="font-sans text-ink font-medium">Market Road Repair</span>
+                                <span className="font-mono text-slate font-bold tracking-widest text-[10px] uppercase">Rank #01 // Raw Volume</span>
+                             </motion.div>
+                             <motion.div layout key="clinic" transition={springProps} className="w-full border border-line bg-paper p-4 flex flex-col md:flex-row justify-between md:items-center gap-2 opacity-50">
+                                <span className="font-sans text-ink font-medium">Vocational Centre</span>
+                                <span className="font-mono text-slate font-bold tracking-widest text-[10px] uppercase">Rank #02 // Hidden Need</span>
+                             </motion.div>
+                          </>
+                       )}
+                    </div>
+                 </motion.div>
+              )}
+           </AnimatePresence>
+        </div>
+
+      </motion.div>
     </section>
   );
 };

@@ -134,13 +134,13 @@ const Track: React.FC = () => {
 
                     {/* Multi-Stage Lifecycle Timeline */}
                     <div className="flex flex-wrap items-center gap-0 mt-2">
-                      {/* Submitted — always active */}
+                      {/* Submitted - always active */}
                       <span className="font-mono text-[10px] uppercase tracking-widest px-3 py-1.5 border border-ink bg-ink text-paper">
                         Submitted
                       </span>
                       <span className="font-mono text-[10px] text-line mx-1 hidden sm:inline">→</span>
 
-                      {/* AI Evaluated — always active */}
+                      {/* AI Evaluated - always active */}
                       <span className="font-mono text-[10px] uppercase tracking-widest px-3 py-1.5 border border-ink bg-ink text-paper">
                         AI Evaluated
                       </span>

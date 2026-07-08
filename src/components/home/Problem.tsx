@@ -22,12 +22,15 @@ const Problem: React.FC = () => {
           {/* Left Column */}
           <div className="flex flex-col justify-center">
             <p className="font-sans text-lg text-slate leading-relaxed">
-              Today, elected representatives receive thousands of citizen requests through public meetings, hand-written letters, social media, and grievance portals. But without a unified system to consolidate this unstructured data, there is no way to weigh requests against each other. Priority defaults to those who complain the loudest or have the most direct access, leaving the most vulnerable constituents behind.
+              Today, elected representatives receive thousands of citizen requests through public meetings, hand-written letters, social media, and grievance portals. But without a clear way to organize these scattered reports, there is no way to weigh requests against each other. Priority defaults to those who complain the loudest or have the most direct access, leaving the most vulnerable constituents behind.
             </p>
           </div>
 
           {/* Right Column: Annotated Visual */}
           <div className="relative">
+            <div className="mb-3">
+              <span className="font-mono text-[10px] text-seal uppercase tracking-widest opacity-80">Demo :</span>
+            </div>
             <div className="flex flex-col border-t border-line">
               <div className="py-4 border-b border-line flex justify-between items-center">
                 <span className="font-sans text-ink">Road repair in Ward 2</span>
@@ -52,9 +55,9 @@ const Problem: React.FC = () => {
               <div className="flex items-start gap-3 lg:w-48">
                 <div className="hidden lg:block w-8 border-t border-line mt-2" />
                 <p className="font-mono text-xs text-seal uppercase tracking-wide leading-relaxed">
-                  No ranking logic.<br />
+                  No objective ranking.<br />
                   No data.<br />
-                  Just volume.
+                  Just noise.
                 </p>
               </div>
             </div>
