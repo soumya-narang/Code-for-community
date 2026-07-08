@@ -93,7 +93,7 @@ const SubmitIssue: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-3 mb-4">
-            <span className="font-mono text-[10px] text-seal uppercase tracking-widest">01 — Collect</span>
+            <span className="font-mono text-[10px] text-seal uppercase tracking-widest">Step 01: Collect</span>
             <span className="w-8 h-px bg-line inline-block" />
             <span className="font-mono text-[10px] text-slate uppercase tracking-widest">Citizen Intake Terminal</span>
           </div>
@@ -101,7 +101,7 @@ const SubmitIssue: React.FC = () => {
             Submit a development request for your ward.
           </h1>
           <p className="font-sans text-slate mt-3 max-w-2xl leading-relaxed">
-            Your submission is anonymized, tagged by AI, and cross-referenced against public data to determine real demand — not just complaint volume.
+            Your submission is anonymized, tagged by AI, and cross-referenced against public data to determine real demand instead of just looking at complaint volume.
           </p>
         </div>
       </header>

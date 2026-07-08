@@ -66,7 +66,7 @@ const Track: React.FC = () => {
             The Constituency Public Ledger & Promise Tracker
           </h1>
           <p className="font-sans text-slate mt-3 max-w-3xl leading-relaxed">
-            Every development request evaluated by Civix is tracked publicly. Priorities are set by evidence, not volume — and every status change is logged here for your review.
+            Every development request evaluated by Civix is tracked publicly. Priorities are set by evidence, not volume, and every status change is logged here for your review.
           </p>
         </div>
       </header>
@@ -95,7 +95,7 @@ const Track: React.FC = () => {
 
       {/* ── Public Ledger ── */}
       <main className="max-w-6xl mx-auto px-6 py-12">
-        <h2 className="font-mono text-[10px] text-seal uppercase tracking-widest mb-8">Priority Ledger — Live</h2>
+        <h2 className="font-mono text-[10px] text-seal uppercase tracking-widest mb-8">Live Priority Ledger</h2>
 
         <div className="border-t border-line flex flex-col">
           {sortedProjects.map((project, index) => {
@@ -286,9 +286,9 @@ const Track: React.FC = () => {
                     transition={{ delay: 0.5 }}
                     className="mt-8 border border-line p-6"
                   >
-                    <span className="font-mono text-[10px] text-seal uppercase tracking-widest block mb-3">
-                      Why This Matters — The Ward 6 Story
-                    </span>
+                    <h3 className="font-display text-2xl text-ink mb-3">
+                      Why This Matters: The Ward 6 Story
+                    </h3>
                     {selectedProject.id === 'p1' ? (
                       <p className="font-sans text-sm text-ink leading-relaxed">
                         The <strong>Vocational Centre</strong> received only <span className="font-mono">12</span> citizen complaints, 
@@ -298,9 +298,9 @@ const Track: React.FC = () => {
                         Volume alone would have misallocated resources.
                       </p>
                     ) : (
-                      <p className="font-sans text-sm text-ink leading-relaxed">
-                        The <strong>School Upgrade</strong> generated <span className="font-mono">50</span> complaints — the 
-                        highest volume of any project — but capacity data shows the school operates at only <span className="font-mono">70%</span> utilization. 
+                      <p className="font-sans text-slate text-sm leading-relaxed">
+                        The <strong>School Upgrade</strong> generated <span className="font-mono">50</span> complaints, which was the 
+                        highest volume of any project. However, capacity data shows the school operates at only <span className="font-mono">70%</span> utilization. 
                         The algorithm correctly deprioritized this request relative to the Vocational Centre, which serves a 
                         population with <span className="font-mono">3×</span> greater structural need.
                       </p>

@@ -30,19 +30,19 @@ const Problem: React.FC = () => {
           <div className="relative">
             <div className="flex flex-col border-t border-line">
               <div className="py-4 border-b border-line flex justify-between items-center">
-                <span className="font-sans text-ink">Road repair — Ward 2</span>
+                <span className="font-sans text-ink">Road repair in Ward 2</span>
                 <span className="font-mono text-slate text-sm">34 mentions</span>
               </div>
               <div className="py-4 border-b border-line flex justify-between items-center bg-line/20">
-                <span className="font-sans text-ink">Water supply — Ward 9</span>
+                <span className="font-sans text-ink">Water supply in Ward 9</span>
                 <span className="font-mono text-slate text-sm">12 mentions</span>
               </div>
               <div className="py-4 border-b border-line flex justify-between items-center">
-                <span className="font-sans text-ink">Streetlights — Ward 4</span>
+                <span className="font-sans text-ink">Streetlights in Ward 4</span>
                 <span className="font-mono text-slate text-sm">8 mentions</span>
               </div>
               <div className="py-4 border-b border-line flex justify-between items-center">
-                <span className="font-sans text-ink">Clinic staffing — Ward 1</span>
+                <span className="font-sans text-ink">Clinic staffing in Ward 1</span>
                 <span className="font-mono text-slate text-sm">3 mentions</span>
               </div>
             </div>

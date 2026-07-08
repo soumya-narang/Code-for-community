@@ -31,7 +31,7 @@ const Hero: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
         >
-          Civix consolidates citizen requests and ranks them against real-world demand data—so elected representatives can allocate resources based on evidence, not noise.
+          Civix consolidates citizen requests and ranks them against real-world demand data, allowing elected representatives to allocate resources based on evidence instead of noise.
         </motion.p>
       </div>
 
@@ -47,7 +47,7 @@ const Hero: React.FC = () => {
           {/* Left Side: Volume-driven */}
           <div className="flex flex-col">
             <div className="mb-4">
-              <h3 className="font-sans font-medium text-ink text-lg">Ward 6 — School Upgrade</h3>
+              <h3 className="font-sans font-medium text-ink text-lg">Ward 6: School Upgrade</h3>
               <p className="font-mono text-slate text-sm mt-1">RAW COMPLAINT VOLUME</p>
             </div>
             
@@ -69,7 +69,7 @@ const Hero: React.FC = () => {
             <div className="mt-6 flex flex-col gap-2 opacity-30 pointer-events-none">
               <div className="flex justify-between items-center py-2 border-b border-dashed border-line">
                 <span className="font-sans text-xs">No demographic flags</span>
-                <span className="font-mono text-xs">—</span>
+                <span className="font-mono text-xs">-</span>
               </div>
             </div>
           </div>
@@ -77,7 +77,7 @@ const Hero: React.FC = () => {
           {/* Right Side: Evidence-driven */}
           <div className="flex flex-col md:border-l md:border-line md:pl-8 relative">
             <div className="mb-4">
-              <h3 className="font-sans font-medium text-ink text-lg">Ward 6 — Vocational Centre</h3>
+              <h3 className="font-sans font-medium text-ink text-lg">Ward 6: Vocational Centre</h3>
               <p className="font-mono text-seal text-sm mt-1">EVIDENCE-BACKED PRIORITY</p>
             </div>
             
@@ -146,7 +146,7 @@ const Hero: React.FC = () => {
           transition={{ duration: 0.5, delay: 3 }}
         >
           <p className="font-mono text-xs text-slate tracking-wide">
-            Same ward. Fewer complaints. Higher priority — because the data says so.
+            Same ward. Fewer complaints. Higher priority because the data backs it up.
           </p>
         </motion.div>
       </motion.div>
