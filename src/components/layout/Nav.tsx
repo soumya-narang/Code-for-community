@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useMotionValueEvent } from 'framer-motion';
+import { CivixLogo } from '../CivixLogo';
 
 const Nav: React.FC = () => {
   const { scrollY } = useScroll();
@@ -20,8 +21,8 @@ const Nav: React.FC = () => {
       transition={{ duration: 0.5, ease: 'easeOut' }}
     >
       <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-        <Link to="/" className="text-3xl font-display font-semibold text-ink tracking-tight">
-          Civix
+        <Link to="/" className="flex items-center" aria-label="Civix Home">
+          <CivixLogo className="h-9 w-auto" />
         </Link>
         
         <div className="hidden md:flex items-center space-x-8">

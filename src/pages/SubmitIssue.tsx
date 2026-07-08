@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { CivixLogo } from '../components/CivixLogo';
 
 type SubmitCategory = 'Education' | 'Health' | 'Roads' | 'Water' | 'Electricity' | 'Sanitation' | 'Other';
 
@@ -79,8 +80,8 @@ const SubmitIssue: React.FC = () => {
       <header className="border-b border-line">
         <div className="max-w-4xl mx-auto px-6 py-8 md:py-12">
           <div className="flex items-center justify-between mb-8">
-            <Link to="/" className="text-3xl font-display font-semibold text-ink tracking-tight">
-              Civix
+            <Link to="/" className="flex items-center" aria-label="Civix Home">
+              <CivixLogo className="h-9 w-auto" />
             </Link>
             <div className="flex items-center gap-6">
               <Link to="/track" className="font-sans text-sm text-slate hover:text-ink transition-colors">

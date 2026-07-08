@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { CivixLogo } from '../CivixLogo';
 
 const Sidebar: React.FC = () => {
   const location = useLocation();
@@ -9,7 +10,7 @@ const Sidebar: React.FC = () => {
     <>
       {/* Mobile Top Bar */}
       <div className="md:hidden flex items-center justify-between p-4 border-b border-line bg-paper sticky top-0 z-20">
-        <span className="font-display font-semibold text-xl text-ink">Civix</span>
+        <CivixLogo className="h-6 w-auto" />
         <button 
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           className="p-2 text-ink"
@@ -29,7 +30,9 @@ const Sidebar: React.FC = () => {
         ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
       `}>
         <div className="p-6 hidden md:block">
-          <Link to="/" className="font-display font-semibold text-2xl text-ink">Civix</Link>
+          <Link to="/" className="flex items-center" aria-label="Civix Home">
+            <CivixLogo className="h-8 w-auto" />
+          </Link>
         </div>
 
         <nav className="mt-4 md:mt-8 flex flex-col w-full h-full">

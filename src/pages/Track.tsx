@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useProjectStore } from '../store/useProjectStore';
 import type { Project, Status } from '../store/useProjectStore';
+import { CivixLogo } from '../components/CivixLogo';
 
 // Lifecycle stages in order
 const LIFECYCLE: Status[] = ['In Review', 'Prioritized', 'Approved for Funding'];
@@ -46,8 +47,8 @@ const Track: React.FC = () => {
       <header className="border-b border-line">
         <div className="max-w-6xl mx-auto px-6 py-8 md:py-12">
           <div className="flex items-center justify-between mb-8">
-            <Link to="/" className="text-3xl font-display font-semibold text-ink tracking-tight">
-              Civix
+            <Link to="/" className="flex items-center" aria-label="Civix Home">
+              <CivixLogo className="h-9 w-auto" />
             </Link>
             <div className="flex items-center gap-6">
               <Link to="/submit" className="font-sans text-sm text-slate hover:text-ink transition-colors">
