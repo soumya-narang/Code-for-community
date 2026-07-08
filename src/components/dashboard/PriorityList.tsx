@@ -15,7 +15,8 @@ const PriorityList: React.FC<PriorityListProps> = ({ activeCategory, searchQuery
   const filteredProjects = projects.filter((p) => {
     const matchesCategory = activeCategory === 'All' || p.category === activeCategory;
     const matchesSearch = p.theme.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          p.ward.toLowerCase().includes(searchQuery.toLowerCase());
+                          p.ward.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          p.justification.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
 

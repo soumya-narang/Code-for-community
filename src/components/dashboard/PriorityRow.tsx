@@ -80,8 +80,8 @@ const PriorityRow: React.FC<PriorityRowProps> = ({ project, rank }) => {
           <div className="flex items-center gap-2">
             {/* Status dot */}
             <span className={`w-2 h-2 rounded-full ${
-              project.status === 'Completed' ? 'bg-seal' : 
-              project.status === 'In Progress' ? 'bg-ink' : 'bg-line'
+              (project.status === 'Approved for Funding' || project.status === 'Prioritized') ? 'bg-seal' : 
+              project.status === 'In Review' ? 'bg-ink' : 'bg-line'
             }`} />
             {/* Expand icon */}
             <svg 
@@ -157,11 +157,12 @@ const PriorityRow: React.FC<PriorityRowProps> = ({ project, rank }) => {
                     <select 
                       value={status} 
                       onChange={(e) => setStatus(e.target.value as Status)}
-                      className="w-full border border-line bg-paper px-3 py-2 text-sm font-sans text-ink focus:outline-none focus:border-ink rounded-none appearance-none"
+                      className="w-full border border-ink bg-ink text-paper px-3 py-2 text-sm font-sans focus:outline-none focus:ring-2 focus:ring-seal rounded-none appearance-none cursor-pointer"
                     >
-                      <option value="Proposed">Proposed</option>
-                      <option value="In Progress">In Progress</option>
-                      <option value="Completed">Completed</option>
+                      <option value="Prioritized">Prioritized</option>
+                      <option value="In Review">In Review</option>
+                      <option value="Approved for Funding">Approved for Funding</option>
+                      <option value="Deferred">Deferred</option>
                     </select>
                   </div>
                   

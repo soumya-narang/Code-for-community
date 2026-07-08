@@ -25,11 +25,14 @@ const Nav: React.FC = () => {
         </Link>
         
         <div className="hidden md:flex items-center space-x-8">
-          <Link to="#product" className="text-sm font-sans font-medium text-slate hover:text-ink transition-colors">
+          <a href="#product" onClick={(e) => { e.preventDefault(); window.scrollTo({top: 0, behavior: 'smooth'}); }} className="text-sm font-sans font-medium text-slate hover:text-ink transition-colors">
             Product
-          </Link>
-          <Link to="#how-it-works" className="text-sm font-sans font-medium text-slate hover:text-ink transition-colors">
+          </a>
+          <a href="#how-it-works" onClick={(e) => { e.preventDefault(); document.getElementById('how-it-works')?.scrollIntoView({behavior: 'smooth'}); }} className="text-sm font-sans font-medium text-slate hover:text-ink transition-colors">
             How it works
+          </a>
+          <Link to="/submit" className="text-sm font-sans font-medium text-slate hover:text-ink transition-colors">
+            Submit Issue
           </Link>
           <Link to="/track" className="text-sm font-sans font-medium text-slate hover:text-ink transition-colors">
             Trust
