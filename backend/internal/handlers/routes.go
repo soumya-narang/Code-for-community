@@ -144,7 +144,58 @@ func (h *Handler) GetSubmissions(c echo.Context) error {
 }
 
 func (h *Handler) GetThemes(c echo.Context) error {
-	return c.JSON(http.StatusOK, []string{})
+	var themes []models.Theme
+	if err := h.DB.Order("priority_score desc").Find(&themes).Error; err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to fetch themes"})
+	}
+
+	// For MVP, we need to return the expected structure for the frontend
+	type FrontendTheme struct {
+		ID                  string      `json:"id"`
+		Theme               string      `json:"theme"`
+		Ward                string      `json:"ward"`
+		Category            string      `json:"category"`
+		Score               float64     `json:"score"`
+		SubmissionCount     int         `json:"submissionCount"`
+		Justification       string      `json:"justification"`
+		Status              string      `json:"status"`
+		StatusJustification string      `json:"statusJustification,omitempty"`
+		LastUpdated         string      `json:"lastUpdated"`
+		Signals             interface{} `json:"signals"`
+		Submissions         interface{} `json:"submissions"`
+	}
+
+	var result []FrontendTheme
+	for _, t := range themes {
+		// Mock mapping signals from breakdown
+		ft := FrontendTheme{
+			ID:              t.ID.String(),
+			Theme:           t.Title,
+			Ward:            t.Ward,
+			Category:        t.Category,
+			Score:           t.PriorityScore,
+			SubmissionCount: t.SubmissionCount,
+			Justification:   t.WhyJustification,
+			Status:          t.Status,
+			LastUpdated:     t.UpdatedAt.Format("2006-01-02T15:04:05Z"),
+			Signals: []map[string]interface{}{
+				{"label": "Citizen volume", "value": 30, "color": "bg-slate"},
+				{"label": "Urgency", "value": 15, "color": "bg-slate"},
+				{"label": "Demand gap", "value": 35, "color": "bg-signal"},
+				{"label": "Recency", "value": 20, "color": "bg-slate"},
+			},
+			Submissions: []map[string]interface{}{},
+		}
+		
+		// Map proper status to frontend enum
+		if ft.Status == "proposed" {
+			ft.Status = "In Review"
+		}
+		
+		result = append(result, ft)
+	}
+
+	return c.JSON(http.StatusOK, result)
 }
 
 func (h *Handler) GetTheme(c echo.Context) error {

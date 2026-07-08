@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useProjectStore } from '../store/useProjectStore';
@@ -14,8 +14,13 @@ function getActiveStageIndex(status: Status): number {
 
 const Track: React.FC = () => {
   const projects = useProjectStore((state) => state.projects);
+  const fetchProjects = useProjectStore((state) => state.fetchProjects);
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>('p1');
   const [flaggedIds, setFlaggedIds] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    fetchProjects();
+  }, [fetchProjects]);
 
   // Derived stats
   const totalSubmissions = projects.reduce((sum, p) => sum + p.submissionCount, 0);

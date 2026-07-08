@@ -33,6 +33,7 @@ export interface Project {
 
 interface ProjectStore {
   projects: Project[];
+  fetchProjects: () => Promise<void>;
   updateStatus: (id: string, status: Status, justification: string) => void;
   addSubmission: (projectId: string, text: string, language?: string) => void;
 }
@@ -145,7 +146,20 @@ const seedProjects: Project[] = [
 ];
 
 export const useProjectStore = create<ProjectStore>((set) => ({
-  projects: seedProjects,
+  projects: seedProjects, // Keep seed as initial or fallback
+  fetchProjects: async () => {
+    try {
+      const res = await fetch('http://localhost:8080/api/themes');
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.length > 0) {
+          set({ projects: data });
+        }
+      }
+    } catch (err) {
+      console.error("Failed to fetch projects", err);
+    }
+  },
   updateStatus: (id, status, justification) => set((state) => ({
     projects: state.projects.map((p) => 
       p.id === id 
