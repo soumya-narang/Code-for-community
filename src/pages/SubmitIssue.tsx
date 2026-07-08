@@ -58,7 +58,7 @@ const SubmitIssue: React.FC = () => {
       setIsSubmitted(true);
     } catch (err) {
       console.error(err);
-      setErrorMsg("Failed to submit issue to backend. Ensure the server is running on :8080.");
+      setErrorMsg(`Failed to submit: ${err instanceof Error ? err.message : 'Network error'}. Check console.`);
     } finally {
       setIsExtracting(false);
     }
