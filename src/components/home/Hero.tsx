@@ -104,7 +104,7 @@ const Hero: React.FC = () => {
            {/* LEFT SIDE: The Loud Noise Channel */}
            <div className="flex flex-col lg:border-r border-line lg:pr-8 pb-10 lg:pb-0">
               <p className="font-mono text-[10px] text-slate uppercase tracking-widest mb-10 text-center lg:text-left">
-                [ THE LOUD NOISE CHANNEL // MARKET ROAD POTHOLES ]
+                [ THE LOUD NOISE CHANNEL // MARKET ROAD POTHOLES&nbsp;]
               </p>
               
               <div className="flex-1 flex flex-col items-center justify-center relative min-h-[220px]">
@@ -142,7 +142,7 @@ const Hero: React.FC = () => {
            {/* RIGHT SIDE: The Silent Scarcity Channel */}
            <div className="flex flex-col lg:pl-8 pt-10 lg:pt-0 border-t lg:border-t-0 border-line">
               <p className="font-mono text-[10px] text-slate uppercase tracking-widest mb-10 text-center lg:text-left">
-                [ THE SILENT SCARCITY CHANNEL // ISOLATED VOCATIONAL CENTRE ]
+                [ THE SILENT SCARCITY CHANNEL // ISOLATED VOCATIONAL CENTRE&nbsp;]
               </p>
               
               <div className="flex-1 flex flex-col items-center justify-center relative min-h-[220px]">
