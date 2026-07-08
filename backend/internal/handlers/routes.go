@@ -7,18 +7,22 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/soumya-narang/Code-for-community/backend/internal/clustering"
 	"github.com/soumya-narang/Code-for-community/backend/internal/llm"
 	"github.com/soumya-narang/Code-for-community/backend/internal/models"
+	"github.com/soumya-narang/Code-for-community/backend/internal/scoring"
 	"gorm.io/gorm"
 )
 
 type Handler struct {
-	DB  *gorm.DB
-	LLM *llm.Client
+	DB               *gorm.DB
+	LLM              *llm.Client
+	ClusteringEngine *clustering.ClusteringEngine
+	ScoringEngine    *scoring.ScoringEngine
 }
 
-func RegisterRoutes(e *echo.Echo, db *gorm.DB, llmClient *llm.Client) {
-	h := &Handler{DB: db, LLM: llmClient}
+func RegisterRoutes(e *echo.Echo, db *gorm.DB, llmClient *llm.Client, ce *clustering.ClusteringEngine, se *scoring.ScoringEngine) {
+	h := &Handler{DB: db, LLM: llmClient, ClusteringEngine: ce, ScoringEngine: se}
 
 	// Health check
 	e.GET("/health", h.HealthCheck)
@@ -28,6 +32,7 @@ func RegisterRoutes(e *echo.Echo, db *gorm.DB, llmClient *llm.Client) {
 
 	// Submissions
 	api.POST("/submissions", h.CreateSubmission)
+	api.POST("/seed", h.SeedWardData)
 	api.GET("/submissions", h.GetSubmissions)
 
 	// Themes
@@ -87,15 +92,40 @@ func (h *Handler) CreateSubmission(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to save submission"})
 	}
 
-	// Async trigger clustering here later
-	// go func() { ... }()
+	// Trigger clustering
+	theme, err := h.ClusteringEngine.ClusterSubmission(ctx, &sub)
+	if err == nil && theme != nil {
+		// Trigger scoring
+		_ = h.ScoringEngine.ScoreTheme(ctx, theme)
+	} else {
+		c.Logger().Errorf("Clustering error: %v", err)
+	}
 
 	return c.JSON(http.StatusCreated, map[string]interface{}{
 		"tracking_id":     sub.TrackingID,
 		"normalized_text": sub.NormalizedText,
 		"category":        sub.Category,
 		"sentiment":       sub.Sentiment,
+		"theme_id":        sub.ThemeID,
 	})
+}
+
+// SeedWardData populates the database with canonical demo data
+func (h *Handler) SeedWardData(c echo.Context) error {
+	ward6Data := models.WardData{
+		Ward:                        "Ward 6",
+		Enrollment:                  1200,
+		SeatsAvailable:              400, // severe demand gap for education
+		Population:                  20000,
+		DistanceToNearestFacilityKm: 15.0,
+		FacilityType:                "School",
+	}
+
+	if err := h.DB.Save(&ward6Data).Error; err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to seed data"})
+	}
+
+	return c.JSON(http.StatusOK, map[string]string{"message": "seeded successfully"})
 }
 
 // Generate unique tracking ID
