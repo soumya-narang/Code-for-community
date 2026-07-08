@@ -149,7 +149,7 @@ export const useProjectStore = create<ProjectStore>((set) => ({
   projects: seedProjects, // Keep seed as initial or fallback
   fetchProjects: async () => {
     try {
-      const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+      const API_BASE = (import.meta.env.VITE_API_URL || 'http://localhost:8080').replace(/\/+$/, '');
       const res = await fetch(`${API_BASE}/api/themes`);
       if (res.ok) {
         const data = await res.json();
